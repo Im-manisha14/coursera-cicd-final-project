@@ -53,12 +53,12 @@ Open <http://localhost:8080/> in a browser.
 
 ```bash
 flake8 app.py test_app.py
-nosetests -v
+python -m unittest -v
 ```
 
 ## GitHub Actions
 
-The workflow in `.github/workflows/workflow.yml` runs for pushes and pull requests. It checks out the repository, sets up Python, installs dependencies, runs flake8, and executes the nose test suite.
+The workflow in `.github/workflows/workflow.yml` runs for pushes and pull requests. It checks out the repository, sets up Python, installs dependencies, runs flake8, and executes the unit test suite.
 
 ## Tekton and OpenShift
 
