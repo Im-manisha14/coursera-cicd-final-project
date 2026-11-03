@@ -1,0 +1,37 @@
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: cleanup
+spec:
+  workspaces:
+    - name: source
+  steps:
+    - name: cleanup
+      image: python:3.11-slim
+      workingDir: $(workspaces.source.path)
+      script: |
+        #!/usr/bin/env sh
+        set -eu
+        rm -rf __pycache__ .pytest_cache .coverage
+        find . -type f -name '*.pyc' -delete
+---
+apiVersion: tekton.dev/v1
+kind: Task
+metadata:
+  name: nose
+spec:
+  params:
+    - name: python-image
+      type: string
+      default: python:3.11-slim
+  workspaces:
+    - name: source
+  steps:
+    - name: install-and-test
+      image: $(params.python-image)
+      workingDir: $(workspaces.source.path)
+      script: |
+        #!/usr/bin/env sh
+        set -eu
+        python -m pip install --no-cache-dir -r requirements.txt
+        nosetests -v

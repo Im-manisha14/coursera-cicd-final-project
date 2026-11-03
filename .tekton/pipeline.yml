@@ -1,0 +1,29 @@
+apiVersion: tekton.dev/v1
+kind: Pipeline
+metadata:
+  name: oc-pipelines-oc-final
+spec:
+  params:
+    - name: python-image
+      type: string
+      default: python:3.12-slim
+  workspaces:
+    - name: shared-workspace
+  tasks:
+    - name: cleanup
+      taskRef:
+        name: cleanup
+      workspaces:
+        - name: source
+          workspace: shared-workspace
+    - name: nose
+      runAfter:
+        - cleanup
+      taskRef:
+        name: nose
+      params:
+        - name: python-image
+          value: $(params.python-image)
+      workspaces:
+        - name: source
+          workspace: shared-workspace
